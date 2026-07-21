@@ -1,0 +1,155 @@
+{
+  "pack": {
+    "code": "ag-combine-oil-v1",
+    "version": "1.0.0",
+    "asset_class": "ag",
+    "asset_subclass": "combine",
+    "title": "Combine — scheduled engine oil & filter service",
+    "effective_from": "2026-01-01",
+    "value_tiers": ["standard", "premium", "ultra"],
+    "description": "Ledger-verified oil change for agricultural combines. Premium materials, procurement chain, meter reading, geofence at farm site, before/during/after evidence."
+  },
+  "intervals": {
+    "meter_type": "hours",
+    "recommended_interval_hours": 250,
+    "max_overdue_hours_for_verified": 50,
+    "notes": "Overdue events may still be recorded as draft; verified stamp requires interval waiver attestation if overdue."
+  },
+  "material_specs": [
+    {
+      "spec_code": "engine_oil_primary",
+      "description": "Primary engine crankcase oil",
+      "min_grade": "15W-40 CJ-4 or OEM equivalent",
+      "synthetic_required": false,
+      "allowed_brands_tier_premium": ["Shell Rotella", "Mobil Delvac", "Chevron Delo", "Valvoline Premium Blue"],
+      "allowed_skus": [],
+      "quantity_unit": "qt",
+      "quantity_min": 10,
+      "quantity_max": 35,
+      "max_age_days_from_purchase": 365,
+      "procurement_required": true
+    },
+    {
+      "spec_code": "engine_oil_filter",
+      "description": "Primary engine oil filter — OEM or OEM-cross only",
+      "allowed_brands_tier_premium": [],
+      "allowed_skus": [],
+      "quantity_unit": "each",
+      "quantity_min": 1,
+      "quantity_max": 2,
+      "max_age_days_from_purchase": 730,
+      "procurement_required": true,
+      "notes": "Populate allowed_skus per OEM (John Deere, Case IH, etc.) in pack revision 1.1."
+    }
+  ],
+  "procedure_steps": [
+    {
+      "step_order": 1,
+      "step_code": "SAFETY_SHUTDOWN",
+      "instruction": "Confirm combine shut down, key removed, hood secured per OEM safety.",
+      "requires_photo": false,
+      "requires_measurement": false
+    },
+    {
+      "step_order": 2,
+      "step_code": "METER_CAPTURE",
+      "instruction": "Photograph hour meter / display showing current engine hours.",
+      "requires_photo": true,
+      "requires_measurement": true,
+      "measurement_unit": "hours",
+      "measurement_field": "ledger_event.meter_reading"
+    },
+    {
+      "step_order": 3,
+      "step_code": "PHOTO_BEFORE",
+      "instruction": "Wide shot of combine + drain area before service.",
+      "requires_photo": true,
+      "photo_phase": "before"
+    },
+    {
+      "step_order": 4,
+      "step_code": "DRAIN_AND_FILTER",
+      "instruction": "Drain crankcase; replace filter per OEM torque spec.",
+      "requires_photo": true,
+      "photo_phase": "during"
+    },
+    {
+      "step_order": 5,
+      "step_code": "FILL_AND_CHECK",
+      "instruction": "Fill to spec; run idle check; inspect for leaks.",
+      "requires_photo": true,
+      "photo_phase": "during"
+    },
+    {
+      "step_order": 6,
+      "step_code": "PHOTO_AFTER",
+      "instruction": "After shots: dipstick level, new filter visible, hour meter unchanged or updated per policy.",
+      "requires_photo": true,
+      "photo_phase": "after"
+    },
+    {
+      "step_order": 7,
+      "step_code": "MATERIALS_RECEIPT_LINK",
+      "instruction": "Link procurement lines for oil and filter used on this event.",
+      "requires_photo": false,
+      "requires_measurement": false
+    },
+    {
+      "step_order": 8,
+      "step_code": "TECH_ATTESTATION",
+      "instruction": "Certified tech attests work performed to this pack version.",
+      "requires_photo": false,
+      "requires_measurement": false
+    }
+  ],
+  "verification_rules": [
+    {
+      "rule_code": "TECH_CERTIFIED_FOR_PACK",
+      "required": true,
+      "applies_to_tiers": ["standard", "premium", "ultra"]
+    },
+    {
+      "rule_code": "GEOFENCE_MATCH",
+      "required": true,
+      "applies_to_tiers": ["premium", "ultra"],
+      "waiver_allowed": true,
+      "waiver_requires_attestation": true
+    },
+    {
+      "rule_code": "PROCUREMENT_PREDATES_EVENT",
+      "required": true,
+      "applies_to_tiers": ["premium", "ultra"]
+    },
+    {
+      "rule_code": "SKU_IN_ALLOW_LIST",
+      "required": true,
+      "applies_to_tiers": ["premium", "ultra"],
+      "notes": "When allowed_skus populated; else brand + grade check only."
+    },
+    {
+      "rule_code": "METER_READING_PRESENT",
+      "required": true,
+      "applies_to_tiers": ["standard", "premium", "ultra"]
+    },
+    {
+      "rule_code": "PHOTO_BEFORE_AFTER",
+      "required": true,
+      "applies_to_tiers": ["premium", "ultra"]
+    },
+    {
+      "rule_code": "DURATION_LOGGED",
+      "required": true,
+      "applies_to_tiers": ["standard", "premium", "ultra"]
+    }
+  ],
+  "evidence_requirements": {
+    "photo_phases_required_premium": ["before", "during", "after", "meter"],
+    "receipt_required_premium": true,
+    "environment_enrichment": true,
+    "hash_algorithm": "SHA-256"
+  },
+  "event_defaults": {
+    "event_type": "maintenance",
+    "event_subtype": "engine_oil_change"
+  }
+}

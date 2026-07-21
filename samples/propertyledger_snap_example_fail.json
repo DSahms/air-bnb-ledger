@@ -1,0 +1,24 @@
+{
+  "export_version": "0.1.0",
+  "standard_pack": "property-str-turnover-v1",
+  "event": {
+    "event_type": "inspection",
+    "event_subtype": "move_out",
+    "property_ref": "STR-Wildwood-Unit-12",
+    "inspector_name": "Demo Inspector",
+    "ledger_verified": true,
+    "status": "draft"
+  },
+  "observations": [
+    {
+      "room_code": "kitchen",
+      "taxonomy_code": "property.room.appliances.condition",
+      "severity": "minor",
+      "human_description": "",
+      "evidence": {
+        "sha256": "not-a-hash",
+        "captured_at": "not-a-date"
+      }
+    }
+  ]
+}

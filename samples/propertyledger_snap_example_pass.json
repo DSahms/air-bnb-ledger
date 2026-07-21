@@ -1,0 +1,38 @@
+{
+  "export_version": "0.1.0",
+  "standard_pack": "property-str-turnover-v1",
+  "event": {
+    "event_type": "inspection",
+    "event_subtype": "move_out",
+    "property_ref": "STR-Wildwood-Unit-12",
+    "inspector_name": "Demo Inspector",
+    "started_at": "2026-06-20T14:00:00.000Z",
+    "exported_at": "2026-06-20T14:05:00.000Z",
+    "ledger_verified": false,
+    "status": "draft"
+  },
+  "observations": [
+    {
+      "room_code": "kitchen",
+      "taxonomy_code": "property.room.appliances.condition",
+      "severity": "minor",
+      "location_label": "kitchen",
+      "comparison_to_prior": "not_applicable",
+      "ai_description": "Stove, Countertop, Kitchenware",
+      "human_description": "Stove and counters clean; minor scuff on cabinet edge noted.",
+      "evidence": {
+        "local_path": "/data/user/0/.../kitchen.jpg",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "captured_at": "2026-06-20T14:02:30.123Z",
+        "gps": { "lat": 38.985, "lon": -74.81 }
+      },
+      "ai_labels": [
+        { "text": "Stove", "confidence": 0.82 },
+        { "text": "Countertop", "confidence": 0.71 }
+      ],
+      "ledger_verified": false,
+      "status": "draft"
+    }
+  ],
+  "demo_note": "Example file for verify_export.py — not from a live device."
+}

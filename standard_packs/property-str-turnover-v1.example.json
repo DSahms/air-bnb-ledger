@@ -1,0 +1,226 @@
+{
+  "pack": {
+    "code": "property-str-turnover-v1",
+    "version": "1.0.0",
+    "asset_class": "property",
+    "asset_subclass": "str_unit",
+    "title": "STR unit — turnover condition documentation (move-out / move-in / full)",
+    "effective_from": "2026-01-01",
+    "value_tiers": ["standard", "premium", "ultra"],
+    "description": "Ledger-verified between-tenant condition record for short-term rentals. Neutral inspector, standardized room taxonomy, GPS/timestamp photos, comparison to prior baseline, chain of custody. PropertyLedger wedge.",
+    "vertical_brand": "PropertyLedger",
+    "markets": ["philadelphia_metro", "south_jersey", "atlantic_city_shore", "pocono_mountains"]
+  },
+  "event_subtypes": {
+    "move_out": {
+      "label": "Move-out / guest departure inspection",
+      "event_type": "inspection",
+      "event_subtype": "move_out",
+      "requires_prior_baseline": false,
+      "notes": "Establishes outgoing tenant condition; becomes baseline for next comparison."
+    },
+    "move_in": {
+      "label": "Move-in / pre-arrival inspection",
+      "event_type": "inspection",
+      "event_subtype": "move_in",
+      "requires_prior_baseline": true,
+      "notes": "Must reference most recent move_out or turnover on same asset."
+    },
+    "turnover_full": {
+      "label": "Full turnover (move-out + move-in same visit)",
+      "event_type": "inspection",
+      "event_subtype": "turnover_full",
+      "requires_prior_baseline": false,
+      "notes": "Single event with outgoing and incoming sections; two observation passes."
+    }
+  },
+  "condition_taxonomy": {
+    "version": "1.0.0",
+    "severity_levels": ["none", "minor", "moderate", "major"],
+    "comparison_values": ["unchanged", "new", "worsened", "improved", "not_applicable"],
+    "room_codes_required_standard": [
+      "entry",
+      "living",
+      "kitchen",
+      "bedroom_1",
+      "bathroom_1"
+    ],
+    "room_codes_required_premium": [
+      "entry",
+      "living",
+      "kitchen",
+      "dining",
+      "bedroom_1",
+      "bedroom_2",
+      "bedroom_3",
+      "bathroom_1",
+      "bathroom_2",
+      "exterior_front",
+      "exterior_rear",
+      "mechanical_closet"
+    ],
+    "observation_prefix": "property.room",
+    "example_taxonomy_codes": [
+      "property.room.walls.condition",
+      "property.room.floors.condition",
+      "property.room.ceiling.condition",
+      "property.room.fixtures.condition",
+      "property.room.appliances.condition",
+      "property.room.windows.condition",
+      "property.room.doors.condition",
+      "property.room.furnishings.condition"
+    ]
+  },
+  "material_specs": [
+    {
+      "spec_code": "bundled_touch_up_paint",
+      "description": "Touch-up paint used for bundled cosmetic repair during turnover (premium repair events only)",
+      "allowed_brands_tier_premium": [],
+      "quantity_unit": "each",
+      "quantity_min": 0,
+      "quantity_max": 5,
+      "procurement_required": false,
+      "notes": "When bundled repair exceeds threshold, separate maintenance event with procurement may apply."
+    },
+    {
+      "spec_code": "bundled_light_bulb",
+      "description": "Replacement bulbs installed during bundled service",
+      "quantity_unit": "each",
+      "quantity_min": 0,
+      "quantity_max": 20,
+      "procurement_required": false
+    }
+  ],
+  "procedure_steps": [
+    {
+      "step_order": 1,
+      "step_code": "ASSIGN_INSPECTOR",
+      "instruction": "Confirm PropertyLedger-certified inspector assigned; no financial stake in deposit outcome.",
+      "requires_photo": false,
+      "requires_measurement": false
+    },
+    {
+      "step_order": 2,
+      "step_code": "SITE_ARRIVAL",
+      "instruction": "Capture arrival at property; confirm address matches asset site record.",
+      "requires_photo": true,
+      "photo_phase": "before",
+      "requires_geofence": true
+    },
+    {
+      "step_order": 3,
+      "step_code": "EXTERIOR_PASS",
+      "instruction": "Photograph front entry, lockbox, exterior damage visible from approach.",
+      "requires_photo": true,
+      "photo_phase": "before"
+    },
+    {
+      "step_order": 4,
+      "step_code": "ROOM_ROUNDS",
+      "instruction": "For each required room code: wide photo + surface observations using standard taxonomy.",
+      "requires_photo": true,
+      "photo_phase": "during",
+      "requires_observations": true
+    },
+    {
+      "step_order": 5,
+      "step_code": "PRIOR_COMPARISON",
+      "instruction": "For move-in or turnover_full incoming pass: compare each observation to prior verified move-out baseline.",
+      "requires_photo": false,
+      "requires_prior_event_link": true,
+      "applies_to_subtypes": ["move_in", "turnover_full"]
+    },
+    {
+      "step_order": 6,
+      "step_code": "BUNDLED_REPAIR_LOG",
+      "instruction": "Document bundled cosmetic repairs performed (bulb, paint touch-up, etc.) with before/after if work performed.",
+      "requires_photo": true,
+      "photo_phase": "during",
+      "optional": true
+    },
+    {
+      "step_order": 7,
+      "step_code": "THRESHOLD_FLAG",
+      "instruction": "Flag items exceeding bundled threshold for owner bid; do not perform without separate authorization event.",
+      "requires_photo": true,
+      "photo_phase": "during",
+      "optional": true
+    },
+    {
+      "step_order": 8,
+      "step_code": "SUMMARY_ATTESTATION",
+      "instruction": "Inspector attests neutral third-party inspection per pack version; chain of custody complete.",
+      "requires_photo": false,
+      "requires_measurement": false
+    }
+  ],
+  "verification_rules": [
+    {
+      "rule_code": "TECH_CERTIFIED_FOR_PACK",
+      "required": true,
+      "applies_to_tiers": ["standard", "premium", "ultra"]
+    },
+    {
+      "rule_code": "GEOFENCE_MATCH",
+      "required": true,
+      "applies_to_tiers": ["standard", "premium", "ultra"],
+      "waiver_allowed": true,
+      "waiver_requires_attestation": true
+    },
+    {
+      "rule_code": "DURATION_LOGGED",
+      "required": true,
+      "applies_to_tiers": ["standard", "premium", "ultra"]
+    },
+    {
+      "rule_code": "PHOTO_BEFORE_AFTER",
+      "required": true,
+      "applies_to_tiers": ["premium", "ultra"],
+      "notes": "Before = arrival/exterior; after = final walk completion."
+    },
+    {
+      "rule_code": "REQUIRED_ROOMS_CAPTURED",
+      "required": true,
+      "applies_to_tiers": ["standard", "premium", "ultra"]
+    },
+    {
+      "rule_code": "TAXONOMY_COMPLETE",
+      "required": true,
+      "applies_to_tiers": ["premium", "ultra"]
+    },
+    {
+      "rule_code": "PRIOR_BASELINE_LINKED",
+      "required": true,
+      "applies_to_tiers": ["premium", "ultra"],
+      "applies_to_subtypes": ["move_in"],
+      "notes": "Move-in must link to verified move-out on same asset."
+    },
+    {
+      "rule_code": "CHAIN_OF_CUSTODY_COMPLETE",
+      "required": true,
+      "applies_to_tiers": ["premium", "ultra"]
+    },
+    {
+      "rule_code": "NEUTRAL_INSPECTOR_ATTESTATION",
+      "required": true,
+      "applies_to_tiers": ["standard", "premium", "ultra"]
+    }
+  ],
+  "evidence_requirements": {
+    "photo_metadata_required": ["captured_at", "capture_latitude", "capture_longitude", "content_hash_sha256"],
+    "device_capture_timestamp_required_premium": true,
+    "environment_enrichment": true,
+    "hash_algorithm": "SHA-256",
+    "public_report_excludes": ["notes_internal", "tenant_pii_unredacted"]
+  },
+  "event_defaults": {
+    "event_type": "inspection",
+    "default_subtype": "move_out"
+  },
+  "platform_notes": {
+    "archive_is_moat": true,
+    "report_product_phase": 2,
+    "owner_subscription_monthly_usd_range": [300, 350],
+    "pm_per_event_usd_range": [75, 200]
+  }
+}
